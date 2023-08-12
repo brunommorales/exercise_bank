@@ -30,25 +30,41 @@ public class Program extends VerticalLayout {
         initialDepositChoice.setLabel("Initial Deposit?");
         initialDepositChoice.setItems("Yes", "No");
 
-        formLayout.add(numberField, holderField, initialDepositChoice, initialDepositField, depositValueField, withdrawValueField, submitButton, resultField);
+        initialDepositChoice.addValueChangeListener(e -> {
+            boolean showInitialDeposit = "Yes".equals(e.getValue());
+            initialDepositField.setVisible(showInitialDeposit);
+        });
+
+
+        formLayout.add(numberField, holderField, initialDepositChoice, initialDepositField, depositValueField, withdrawValueField, resultField);
+
+        VerticalLayout buttonLayout = new VerticalLayout(submitButton);
+        buttonLayout.setAlignItems(Alignment.CENTER);
+        buttonLayout.setJustifyContentMode(JustifyContentMode.CENTER);
+        buttonLayout.setWidthFull();
 
         submitButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         submitButton.addClickListener(e -> submitForm());
 
-        add(formLayout);
+        add(formLayout, buttonLayout);
     }
 
     private void submitForm() {
         int number = Integer.parseInt(numberField.getValue());
         String holder = holderField.getValue();
 
-        String initialDepositChoice = this.initialDepositChoice.getValue();
-        double initialDeposit = initialDepositChoice.equals("Yes") ? Double.parseDouble(initialDepositField.getValue()) : 0.0;
-
-        if (initialDepositChoice.equals("Yes")) {
-            account = new Account(number, holder, initialDeposit);
-        } else {
+        if (account == null) {
             account = new Account(number, holder);
+        }
+
+        String selectedInitialDepositChoice = this.initialDepositChoice.getValue();
+        double initialDeposit = selectedInitialDepositChoice.equals("Yes") ? Double.parseDouble(initialDepositField.getValue()) : 0.0;
+
+        account.setNumber(number);
+        account.setHolder(holder);
+
+        if (selectedInitialDepositChoice.equals("Yes")) {
+            account.deposit(initialDeposit);
         }
 
         double depositValue = Double.parseDouble(depositValueField.getValue());
@@ -60,6 +76,7 @@ public class Program extends VerticalLayout {
         resultField.setValue(account.toString());
         showNotification("Account data updated!");
     }
+
 
     private void showNotification(String message) {
         Notification.show(message, 3000, Notification.Position.TOP_CENTER);
