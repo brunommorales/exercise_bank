@@ -19,7 +19,7 @@ public class Program extends VerticalLayout {
     private final TextField initialDepositField = new TextField("Initial Deposit");
     private final TextField depositValueField = new TextField("Deposit Value");
     private final TextField withdrawValueField = new TextField("Withdraw Value");
-    private final Button submitButton = new Button ("Submit");
+    private final Button submitButton = new Button("Submit");
     private final TextField resultField = new TextField("Result");
 
     private Account account;
